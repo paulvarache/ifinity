@@ -2,6 +2,8 @@
 <link rel="import" href="./emitter.html">
 <link rel="import" href="./grid.html">
 <link rel="import" href="./level.html">
+<link rel="import" href="./sound-player.html">
+<link rel="import" href="./asset-loader.html">
 <script>
     (function (Ifinity) {
         class Engine extends HTMLElement {
@@ -20,7 +22,10 @@
                     this.canvas.height = rect.height;
                     this.ctx = this.canvas.getContext('2d');
                     this.setup();
-                    this.update(0);
+                    this.load().then(() => {
+                        this.update(0);
+                        Ifinity.SoundPlayer.play('startup');
+                    });
                 });
             }
 
@@ -29,6 +34,12 @@
                 this.level.setup();
                 this.camera = new Ifinity.Camera(this.ctx);
                 this.grid = new Ifinity.Grid(this.ctx, this.canvas.width, this.canvas.height, 40, "#191B1C");
+            }
+
+            load () {
+                return Ifinity.AssetLoader.loadBuffer('pwmsyncsweep.wav').then(b => {
+                    return Ifinity.SoundPlayer.add('startup', b);
+                });
             }
 
             update (timestamp) {
