@@ -1,0 +1,39 @@
+<script>
+    (function (Ifinity) {
+        class Grid {
+
+            constructor (ctx, width, height, gridSpacing, color) {
+                this.ctx = ctx;
+                this.width = width;
+                this.color = color;
+                this.height = height;
+                this.gridSpacing = gridSpacing;
+            }
+
+            render () {
+                let i;
+
+                this.ctx.beginPath();
+                for (i = 1; i < this.height / this.gridSpacing; i++) {
+                    this.ctx.moveTo(0,          this.gridSpacing * i);
+                    this.ctx.lineTo(this.width, this.gridSpacing * i);
+                }
+
+                for (i = 1; i < this.width / this.gridSpacing; i++) {
+                    this.ctx.moveTo(this.gridSpacing * i, 0);
+                    this.ctx.lineTo(this.gridSpacing * i, this.height);
+                }
+
+                this.ctx.strokeStyle = this.color;
+                this.ctx.stroke();
+            }
+
+            remove () {
+                this.ctx.restore();
+            }
+        }
+
+        Ifinity.Grid = Grid;
+
+    })(window.Ifinity = window.Ifinity || {});
+</script>

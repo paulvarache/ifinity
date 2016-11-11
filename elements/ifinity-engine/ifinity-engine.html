@@ -1,5 +1,6 @@
 <link rel="import" href="./camera.html">
 <link rel="import" href="./emitter.html">
+<link rel="import" href="./grid.html">
 <link rel="import" href="./level.html">
 <link rel="import" href="./sound-player.html">
 <link rel="import" href="./asset-loader.html">
@@ -32,6 +33,7 @@
                 this.level = new Ifinity.Level(this.ctx, '01');
                 this.level.setup();
                 this.camera = new Ifinity.Camera(this.ctx);
+                this.grid = new Ifinity.Grid(this.ctx, this.canvas.width, this.canvas.height, 40, "#191B1C");
             }
 
             load () {
@@ -53,6 +55,7 @@
                 this.camera.install();
                 this.ctx.fillStyle = 'black';
                 this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                this.grid.render();
                 this.level.render();
                 this.camera.remove();
             }
@@ -61,5 +64,5 @@
         Ifinity.Engine = Engine;
 
         customElements.define('ifinity-engine', Ifinity.Engine);
-    })(window.Ifinity = window.Ifinity || {});    
+    })(window.Ifinity = window.Ifinity || {});
 </script>
