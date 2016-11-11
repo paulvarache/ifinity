@@ -1,0 +1,469 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../bower_components/iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="./import.html">
+<link rel="import" href="../kano-blockly-omnibox/kano-blockly-omnibox.html">
+
+<dom-module id="kano-blockly">
+    <style>
+        :host {
+            display: block;
+            position: relative;
+        }
+        :host #workspace {
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+        }
+        svg {
+            @apply(--kano-crossed-background);
+        }
+
+        .blocklyTreeRoot>div[role="group"]>div:not([role="treeitem"]), ::slotted(* .blocklyTreeRoot>div[role="group"]>div:not([role="treeitem"])) {
+            display: none;
+        }
+
+        .blocklyEditableText>rect, ::slotted(*.blocklyEditableText>rect) {
+            fill: white;
+            fill-opacity: 0.6;
+        }
+
+        .blocklyPathDark,
+        .blocklyPathLight,
+        ::slotted(* .blocklyPathDark),
+        ::slotted(* .blocklyPathLight) {
+            fill: transparent !important;
+            stroke-width: 0px !important;
+        }
+        .blocklySelected > .blocklyPath, ::slotted(* .blocklySelected > .blocklyPath) {
+            stroke-width: 1px !important;
+            stroke: rgba(0, 0, 0, 0.5) !important;
+            stroke-linejoin: round !important;
+        }
+        .blocklyHighlightedConnectionPath, ::slotted(* .blocklyHighlightedConnectionPath) {
+            stroke-width: 2px !important;
+        }
+        text.blocklyText, ::slotted(* text.blocklyText) {
+            font-family: bariol;
+            font-size: 1em;
+        }
+        .blocklyEditableText:hover > rect, ::slotted(* .blocklyEditableText:hover > rect) {
+            stroke-width: 1px !important;
+        }
+        .blocklyEditableText .blocklyText, ::slotted(* .blocklyEditableText .blocklyText) {
+            font-size: 1em !important;
+        }
+        div.blocklyTreeRoot, ::slotted(* div.blocklyTreeRoot) {
+            padding: 0px;
+        }
+        span.blocklyTreeLabel, ::slotted(* span.blocklyTreeLabel) {
+            font-family: bariol;
+            font-size: 14px;
+        }
+        div.blocklyTreeRow, ::slotted(* div.blocklyTreeRow) {
+            position: relative;
+            height: auto !important;
+            line-height: 20px !important;
+            padding: 9px 12px !important;
+            margin: 0px;
+            color: white;
+            font-size: 1em;
+        }
+        div.blocklyTreeRow:hover,
+        span.blocklyTreeLabel:hover,
+        ::slotted(* div.blocklyTreeRow:hover),
+        ::slotted(* span.blocklyTreeLabel:hover) {
+            cursor: pointer;
+        }
+        div.blocklyTriangle {
+            position: absolute;
+            left: 130px;
+            top: 0px;
+            display: none;
+            border: 12px solid transparent;
+            border-left: 0px;
+            border-right-width: 10px;
+            border-right-color: #E8E8E8;
+        }
+        span.blocklyTreeIcon, ::slotted(* span.blocklyTreeIcon) {
+            width: 0px;
+        }
+        div.blocklyToolboxDiv, ::slotted(* div.blocklyToolboxDiv) {
+            background-color: transparent;
+            position: absolute;
+        }
+        div.goog-tree-item, ::slotted(* div.goog-tree-item) {
+            border: 0px;
+            visibility: hidden;
+        }
+        path.blocklyFlyoutBackground, ::slotted(* path.blocklyFlyoutBackground) {
+            fill: #E8E8E8;
+            fill-opacity: 1;
+        }
+        rect.blocklyMainBackground, ::slotted(* rect.blocklyMainBackground) {
+            opacity: 0 !important;
+        }
+        .buttons button {
+            @apply(--kano-button);
+            background-color: var(--color-green, green);
+        }
+        .container input {
+            @apply(--kano-input);
+            width: 100%;
+            border: 2px solid var(--color-lightgrey, grey);;
+            padding: 5px;
+            font-size: 17px;
+            box-sizing: border-box
+        }
+        .container input:focus {
+            outline: none;
+            border: 2px solid var(--color-orange, orange);
+        }
+        .container {
+            padding: 8px 24px 8px 24px;
+        }
+        .buttons {
+            padding: 8px 24px 16px 24px
+        }
+        .omnibox-wrapper {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            @apply(--layout-vertical);
+            @apply(--layout-center);
+            display: none;
+            /* 150px is half the max size of the flyout */
+            padding-top: calc(50% - 150px);
+        }
+    </style>
+    <template>
+        <div id="workspace"></div>
+        <div class="omnibox-wrapper" id="omnibox-wrapper" on-tap="_omniboxWrapperTapped">
+            <kano-blockly-omnibox id="omnibox" on-close="_closeOmnibox"></kano-blockly-omnibox>
+        </div>
+        <paper-dialog id="var-modal" entry-animation="scale-up-animation" exit-animation="fade-out-animation" on-iron-overlay-opened="_focusOnInput">
+            <h2>[[modalText]]</h2>
+            <div class="container">
+                <input id="var-input" type="text" name="name" value="{{modalInput::input}}">
+            </div>
+            <div class="buttons">
+                <button dialog-confirm>Confirm</button>
+            </div>
+            <iron-a11y-keys keys="esc" on-keys-pressed="_closeVarModal" target="[[varModal]]"></iron-a11y-keys>
+        </paper-dialog>
+        <iron-a11y-keys keys="meta+f" on-keys-pressed="_openOmnibox" target="[[target]]"></iron-a11y-keys>
+        <iron-a11y-keys keys="esc" on-keys-pressed="_closeOmnibox" target="[[target]]"></iron-a11y-keys>
+    </template>
+</dom-module>
+
+<script>
+    /* globals Polymer, Blockly */
+
+    Polymer({
+        is: 'kano-blockly',
+        properties: {
+            toolbox: {
+                type: Array,
+                value: () => []
+            },
+            toolboxXml: {
+                type: String,
+                computed: 'computeToolboxXml(toolbox)'
+            },
+            code: {
+                type: String,
+                notify: true
+            },
+            defaultBlocks: {
+                type: String,
+                observer: '_defaultBlocksChanged'
+            },
+            language: {
+                type: String,
+                value: 'JavaScript'
+            }
+        },
+        ready () {
+            this.codeRelatedEvents = [Blockly.Events.CREATE, Blockly.Events.MOVE, Blockly.Events.CHANGE];
+        },
+        /**
+         * Inject blockly to the workspace div
+         */
+        attached () {
+            this.varModal = this.$['var-modal'];
+            this.target = document.body;
+            this.visible = false;
+            this.workspace = Blockly.inject(this.$.workspace, {
+                toolbox: this.toolboxXml,
+                media: '/assets/vendor/google-blockly/media/',
+                scrollbars: true,
+                zoom: {
+                    controls: true,
+                    startScale: 1.0,
+                    maxScale: 3,
+                    minScale: 0.3,
+                    scaleSpeed: 1.2
+                }
+            });
+            this.$.omnibox.targetWorkspace = this.workspace;
+            // Oddly, panning doesn't work if the background has a fill property
+            Polymer.dom(this.root).querySelector('.blocklyMainBackground').style.fill = '';
+            Polymer.dom(this.root).appendChild(Blockly.Css.styleSheet_.ownerNode.cloneNode(true));
+            this.workspace.componentRoot_ = Polymer.dom(this.root);
+            this.workspace.options.modalFunction = this._blocklyVarModal.bind(this);
+            this.workspace.addChangeListener(this.onBlocklyChange.bind(this));
+            this.async(() => {
+                this.fire('blockly-ready');
+                this.resize();
+                // Trick to enable shadow DOM like styling of xtag generated components
+                if (!Polymer.Settings.useNativeShadow) {
+                    let elems = Polymer.dom(this.root).querySelectorAll('svg, div');
+
+                    for (let i = 0; i < elems.length; i++) {
+                        this.toggleClass('kano-blockly', true, elems[i]);
+                    }
+                }
+            });
+
+            document.body.style.overflow = 'hidden';
+        },
+        detached () {
+            this.workspace.dispose();
+            document.body.style.overflow = undefined;
+        },
+        _closeOmnibox (e) {
+            if (!this._omniboxOpened) {
+                return;
+            }
+            if (e && e.detail.keyboardEvent) {
+                e.detail.keyboardEvent.stopPropagation();
+                e.detail.keyboardEvent.preventDefault();
+            }
+            this._omniboxOpened = false;
+            this.$.omnibox.animate([{
+                opacity: 1
+            }, {
+                opacity: 0
+            }], {
+                duration: 80,
+                easing: 'ease-in'
+            }).finished.then(_ => {
+                this.$['omnibox-wrapper'].style.display = 'none';
+            });
+        },
+        _openOmnibox (e) {
+            if (e.detail && e.detail.keyboardEvent) {
+                e.detail.keyboardEvent.preventDefault();
+                e.detail.keyboardEvent.stopPropagation();
+            }
+            Blockly.ContextMenu.hide();
+            this._omniboxOpened = true;
+            this.$['omnibox-wrapper'].style.display = 'flex';
+            this.$.omnibox.focus();
+            this.$.omnibox.animate([{
+                transform: 'scale(0)',
+                opacity: 0
+            }, {
+                transform: 'scale(1)',
+                opacity: 1
+            }], {
+                duration: 150,
+                easing: 'cubic-bezier(0.2, 0, 0.13, 1.5)'
+            });
+        },
+        _omniboxWrapperTapped (e) {
+            let event = Polymer.dom(e);
+            if (event.rootTarget === this.$['omnibox-wrapper']) {
+                this._closeOmnibox();
+            }
+        },
+        _blocklyVarModal (promptText, defaultText) {
+            return new Promise((resolve, reject) => {
+                let modal = this.$['var-modal'],
+                onModalClose = function (e) {
+                    let reason = e.detail,
+                        varName = this.modalInput;
+                    modal.removeEventListener('iron-overlay-closed', onModalClose);
+                    if (reason.canceled) {
+                        return resolve(null);
+                    }
+                    if (!varName.length) {
+                        varName = null;
+                    }
+                    return resolve(varName);
+                }.bind(this);
+                this.modalText = promptText;
+                this.modalInput = defaultText;
+                modal.addEventListener('iron-overlay-closed', onModalClose);
+                modal.open();
+            });
+        },
+        _focusOnInput () {
+            this.$['var-input'].focus();
+        },
+        _closeVarModal (e) {
+            this.$['var-modal'].cancel();
+            e.stopPropagation();
+            e.preventDefault();
+        },
+        /**
+         * Triggers the resize event on the window
+         */
+        resize () {
+            let ev = new Event('resize');
+            window.dispatchEvent(ev);
+            if (!this.workspace) {
+                return;
+            }
+            Blockly.resizeSvgContents(this.workspace);
+        },
+        /**
+         * Takes a categories definition in JSON and generates the XML
+         * string blockly needs to display the toolbox.
+         * It will also update the current blockly workspace.
+         * @param  {Object} toolbox A JSON toolbox definition
+         * @return {String}         A XML toolbox definition
+         */
+        computeToolboxXml () {
+            // Force default toolbox if empty since blockly is not able
+            // to switch from empty to category mode
+            if (!this.toolbox || !this.toolbox.length) {
+                return '<xml><category name=""></category></xml>';
+            }
+            let xml,
+                categoriesXml = this.toolbox.map((category) => {
+                    if (category.type === 'separator') {
+                        return '<sep gap="8"></sep>';
+                    }
+                    let blocksXml = category.blocks.map((block) => {
+                        let shadow = block.shadow || {},
+                            content = Object.keys(shadow).map(field => `<value name="${field}">${block.shadow[field]}</value>`);
+                        return `<block type="${block.id}">${content}</block>`;
+                    }).join(''),
+                        colour = category.colour;
+
+                    if (colour && typeof colour.replace === 'function') {
+                        colour = colour.replace(/"/g, '&quot;');
+                    }
+                    return `<category name="${category.name}" colour="${colour}" id="${category.id}">
+                                ${blocksXml}
+                            </category>`;
+                }).join('');
+            xml = `<xml>${categoriesXml}</xml>`;
+            // Update the workspace if it exists
+            if (this.workspace) {
+                try {
+                    this.workspace.updateToolbox(xml);
+                } catch (e) {} // Ignore toolbox loading errors
+            }
+            return xml;
+        },
+        /**
+         * Remove every block in the workspace
+         */
+        clearWorkspace () {
+            if (!this.workspace) {
+                return;
+            }
+            this.workspace.clear();
+        },
+        /**
+         * Update the code on any blockly change and
+         * bubble up the event
+         * @param  {Event} e    A Blockly event
+         * @return {[type]}   [description]
+         */
+        onBlocklyChange (e) {
+            if (e.type === Blockly.Events.CREATE) {
+                this.lastCreated = e.blockId;
+            }
+            // If there is a move event or a click event, we check if it matches the last block created
+            if ((e.type === Blockly.Events.MOVE || e.type === Blockly.Events.UI && e.element === 'click') &&
+                this.lastCreated === e.blockId) {
+                // The block targetted by the last event matches the last created,
+                //  we trigger a drop event
+                let ev = {
+                    type: Blockly.Events.DROP_BLOCK,
+                    blockId: e.blockId
+                };
+                this.workspace.fireChangeListener(ev);
+                this.lastCreated = null;
+            }
+            this.fire('change', e);
+            if (this.codeRelatedEvents.indexOf(e.type) !== -1) {
+                this.set('code', this.getCode(this.language));
+            }
+        },
+        /**
+         * Generate a XML string representation of the blocks
+         * currently on the workspace
+         * @return {String}     XML string representation of the blocks
+         */
+        getBlocks () {
+            let xml = Blockly.Xml.workspaceToDom(this.workspace),
+                xmlString = Blockly.Xml.domToText(xml);
+            return xmlString;
+        },
+        /**
+         * Compute the current code for a given language
+         * @param  {String} type Language to use to compute the code
+         * @return {String}      A piece of code
+         */
+        getCode (type) {
+            try {
+                return Blockly[type].workspaceToCode(this.workspace);
+            } catch (e) {
+                return '';
+            }
+        },
+        save () {
+            let javascript = this.getCode(this.language),
+                pseudo = this.getCode('Pseudo'),
+                blocks = this.getBlocks(),
+                snapshot = {
+                    javascript,
+                    pseudo,
+                    blocks
+                };
+            this.set('snapshot', snapshot);
+            return Promise.resolve(snapshot);
+        },
+        load (snapshot = {}) {
+            // Defer the load until the workspace exists
+            if (!this.workspace) {
+                return this.addEventListener('blockly-ready', this.load.bind(this, snapshot));
+            }
+            this._loadBlocks(snapshot.blocks);
+        },
+        _loadBlocks (blocksXml='<xml xmlns="http://www.w3.org/1999/xhtml"></xml>') {
+            let xml = Blockly.Xml.textToDom(blocksXml);
+            this.clearWorkspace();
+            try {
+                Blockly.Xml.domToWorkspace(xml, this.workspace);
+            } catch (e) {console.log(e)} // Ignore loading errors
+            this._checkDefaultBlocks();
+        },
+        _checkDefaultBlocks () {
+            let blocks = this.workspace.getAllBlocks();
+            if (!blocks.length) {
+                this._loadBlocks(this.defaultBlocks);
+            }
+        },
+        _defaultBlocksChanged () {
+            // Defer the load until the workspace exists
+            if (!this.workspace) {
+                return this.addEventListener('blockly-ready', this._defaultBlocksChanged.bind(this));
+            }
+            this._checkDefaultBlocks();
+        },
+        getWorkspace () {
+            return this.workspace;
+        }
+    });
+</script>
