@@ -1,0 +1,17 @@
+<script>
+    Blockly.Blocks.example_block = {
+        init: function () {
+            let json = {
+                id: 'example_block',
+                colour: '#ff00ff',
+                message0: 'Example block',
+                output: 'String'
+            }
+            this.jsonInit(json);
+        }
+    };
+
+    Blockly.JavaScript.example_block = function (block) {
+        return ['"output string"'];
+    };
+</script>

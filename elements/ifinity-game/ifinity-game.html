@@ -1,0 +1,54 @@
+<link rel="import" href="../kano-blockly/kano-blockly.html">
+<link rel="import" href="./blocks/example.html">
+<link rel="import" href="../ifinity-engine/ifinity-engine.html">
+<script>
+    (function (Ifinity) {
+        class Game extends HTMLElement {
+
+            constructor () {
+                super();
+            }
+
+            connectedCallback () {
+                let engine = new Ifinity.Engine();
+                this.blockly = document.createElement('kano-blockly');
+                this.style.display = 'flex';
+                
+                engine.style.flex = '1 0 auto';
+
+                this.blockly.style.position = 'absolute';
+                this.blockly.style.top = '20px';
+                this.blockly.style.left = '20px';
+                this.blockly.style.bottom = '20px';
+                this.blockly.style.right = '20px';
+
+                this.blockly.toolbox = [{
+                    id: 'example',
+                    name: 'Example',
+                    colour: '#ff00ff',
+                    blocks: [{
+                        id: 'example_block'
+                    }]
+                }];
+
+                this.hideBlockly();
+
+                this.appendChild(engine);
+                this.appendChild(this.blockly);
+            }
+
+            showBlockly () {
+                this.blockly.style.visibility = 'visible';
+            }
+
+            hideBlockly () {
+                this.blockly.style.visibility = 'hidden';
+            }
+
+        }
+
+        Ifinity.Game = Game;
+
+        customElements.define('ifinity-game', Ifinity.Game);
+    })(window.Ifinity = window.Ifinity || {});    
+</script>

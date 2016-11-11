@@ -4,8 +4,12 @@
 <link rel="import" href="./level.html">
 <link rel="import" href="./sound-player.html">
 <link rel="import" href="./asset-loader.html">
+<link rel="import" href="./mouse.html">
 <script>
     (function (Ifinity) {
+
+        const GRID_SIZE = 40;
+
         class Engine extends HTMLElement {
 
             constructor () {
@@ -30,10 +34,14 @@
             }
 
             setup () {
+                Ifinity.Mouse.grab(this);
+                Ifinity.Mouse.onClick((e) => {
+                    console.log(Math.floor(e.x / GRID_SIZE), Math.floor(e.y / GRID_SIZE));
+                });
                 this.level = new Ifinity.Level(this.ctx, '01');
                 this.level.setup();
                 this.camera = new Ifinity.Camera(this.ctx);
-                this.grid = new Ifinity.Grid(this.ctx, this.canvas.width, this.canvas.height, 40, "#191B1C");
+                this.grid = new Ifinity.Grid(this.ctx, this.canvas.width, this.canvas.height, GRID_SIZE, "#191B1C");
             }
 
             load () {
