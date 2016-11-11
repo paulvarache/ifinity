@@ -50,8 +50,8 @@
 
                         level.goals.forEach((goal, index) => {
                             let g = new Ifinity.Goal(this.ctx, this.world);
-                            g.x = goal.x;
-                            g.y = goal.y;
+                            g.x = goal.x * GRID_SIZE + GRID_SIZE / 2;
+                            g.y = goal.y * GRID_SIZE + GRID_SIZE / 2;
                             g.data = {
                                 "acceptedColor": goal.acceptedColor
                             }

@@ -19,7 +19,7 @@
     }, {
         "x": 10,
         "y": 10,
-        "angle": 180,
+        "angle": 260,
         "toolbox": [{
             "id": "yo",
             "name": "YO",
@@ -30,8 +30,8 @@
         }]
     }],
     "goals": [{
-        "x": 100,
-        "y": 100,
+        "x": 10,
+        "y": 9,
         "acceptedColor": "#00BFFF"
     }]
 }
