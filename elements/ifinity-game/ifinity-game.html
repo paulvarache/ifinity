@@ -1,8 +1,27 @@
 <link rel="import" href="../kano-blockly/kano-blockly.html">
 <link rel="import" href="./blocks/example.html">
 <link rel="import" href="../ifinity-engine/ifinity-engine.html">
+<template id="ifinity-game">
+    <style>
+        ifinity-game {
+            display: flex;
+        }
+        ifinity-engine {
+            flex: 1 0 auto;
+        }
+        kano-blockly {
+            position: absolute !important;
+            top: 40px;
+            bottom: 40px;
+            left: 40px;
+            right: 40px;
+        }
+    </style>
+    <ifinity-engine></ifinity-engine>
+</template>
 <script>
     (function (Ifinity) {
+
         class Game extends HTMLElement {
 
             constructor () {
@@ -10,39 +29,64 @@
             }
 
             connectedCallback () {
-                let engine = new Ifinity.Engine();
+                let template = document.currentScript.parentNode.querySelector('template#ifinity-game');
+                this.appendChild(template.content.cloneNode(true));
+                this.engine = this.querySelector('ifinity-engine');
                 this.blockly = document.createElement('kano-blockly');
-                this.style.display = 'flex';
-                
-                engine.style.flex = '1 0 auto';
-
-                this.blockly.style.position = 'absolute';
-                this.blockly.style.top = '20px';
-                this.blockly.style.left = '20px';
-                this.blockly.style.bottom = '20px';
-                this.blockly.style.right = '20px';
-
-                this.blockly.toolbox = [{
-                    id: 'example',
-                    name: 'Example',
-                    colour: '#ff00ff',
-                    blocks: [{
-                        id: 'example_block'
-                    }]
-                }];
-
-                this.hideBlockly();
-
-                this.appendChild(engine);
                 this.appendChild(this.blockly);
+
+                this.engine.addEventListener('station-click', (e) => {
+                    this.loadStation(e.detail.station);
+                });
+
+                this.engine.addEventListener('click', (e) => {
+                    this.hideBlockly();
+                });
+
+                this.blocklyOpened = true;
+                this.hideBlockly(true);
             }
 
             showBlockly () {
+                if (this.blocklyOpened) {
+                    return;
+                }
+                this.blocklyOpened = true;
                 this.blockly.style.visibility = 'visible';
+                this.blockly.animate({
+                    transform: ['scale(0)', 'scale(1)'],
+                    opacity: [0, 1],
+                }, {
+                    easing: 'ease-in-out',
+                    duration: 100
+                });
             }
 
-            hideBlockly () {
-                this.blockly.style.visibility = 'hidden';
+            hideBlockly (now) {
+                if (!this.blocklyOpened) {
+                    return;
+                }
+                this.blocklyOpened = false;
+                if (now) {
+                    this.blockly.style.visibility = 'hidden';
+                } else {
+                    this.blockly.animate({
+                        opacity: [1, 0],
+                    }, {
+                        easing: 'ease-in-out',
+                        duration: 100
+                    }).onfinish = () => {
+                        this.blockly.style.visibility = 'hidden';
+                    }
+                }
+            }
+
+            loadStation (station) {
+                this.blockly.toolbox = station.toolbox;
+                if (station.blocks) {
+                    this.blockly.load({ blocks: station.blocks });
+                }
+                this.showBlockly();
             }
 
         }

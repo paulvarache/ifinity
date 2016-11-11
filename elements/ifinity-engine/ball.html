@@ -28,6 +28,10 @@
                     if (elem !== this.lastCollision) {
                         collidedElement = this.world.get(cols[0]).data;
 
+                        if (typeof collidedElement === 'undefined') {
+                            return;
+                        }
+
                         if ("angle" in collidedElement) {
                             this.angle = collidedElement.angle;
                             direction = this.angle * Math.PI / 180;

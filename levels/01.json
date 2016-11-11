@@ -1,17 +1,33 @@
 {
     "emitters": [{
-        "x": 20,
-        "y": 20,
+        "x": 0,
+        "y": 0,
         "rotation": 90
     }],
     "stations": [{
-        "x": 20,
-        "y": 140,
-        "angle": 0
+        "x": 0,
+        "y": 10,
+        "angle": 0,
+        "toolbox": [{
+            "id": "yo",
+            "name": "YO",
+            "colour": "#ffff00",
+            "blocks": [{
+                "id": "controls_if"
+            }]
+        }]
     }, {
-        "x": 100,
-        "y": 140,
-        "angle": 270
+        "x": 10,
+        "y": 10,
+        "angle": 180,
+        "toolbox": [{
+            "id": "yo",
+            "name": "YO",
+            "colour": "#ffff00",
+            "blocks": [{
+                "id": "controls_if"
+            }]
+        }]
     }],
     "goals": [{
         "x": 100,

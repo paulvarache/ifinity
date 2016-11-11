@@ -2,9 +2,14 @@
 <link rel="import" href="./station.html">
 <link rel="import" href="./goal.html">
 <link rel="import" href="./world.html">
+<link rel="import" href="./events.html">
+<link rel="import" href="./grid.html">
 <script>
     (function (Ifinity) {
-        class Level /*extends Ifinity.RenderedObject*/ {
+
+        const GRID_SIZE = 40;
+
+        class Level {
 
             constructor (ctx, levelId) {
                 this.ctx = ctx;
@@ -23,19 +28,21 @@
                     .then(level => {
                         level.emitters.forEach(emitterData => {
                             let e = new Ifinity.Emitter(this.ctx, this.world);
-                            e.x = emitterData.x;
-                            e.y = emitterData.y;
+                            e.x = emitterData.x * GRID_SIZE + GRID_SIZE / 2;
+                            e.y = emitterData.y * GRID_SIZE + GRID_SIZE / 2;
                             e.rotation = emitterData.rotation * Math.PI / 180;
                             this.emitters.push(e);
                         });
 
                         level.stations.forEach((stationData, index) => {
                             let s = new Ifinity.Station(this.ctx, this.world);
-                            s.x = stationData.x;
-                            s.y = stationData.y;
+                            s.x = stationData.x * GRID_SIZE + GRID_SIZE / 2;
+                            s.y = stationData.y * GRID_SIZE + GRID_SIZE / 2;
                             s.data = {
                                 angle: stationData.angle
                             };
+                            s.toolbox = stationData.toolbox;
+                            s.blocks = stationData.blocks;
                             s.id = `station${index}`;
                             this.stations.push(s);
                             this.world.add(s.id, s.x, s.y, s.size, s.data);
@@ -52,6 +59,19 @@
                             console.log("added anew goal", g);
                             this.goals.push(g);
                             this.world.add(g.id, g.x, g.y, g.size, g.data);
+                        });
+
+                        Ifinity.Events.on('cell-click', (e) => {
+                            this.stations.forEach(station => {
+                                if (Ifinity.Grid.isInCell(station.x - station.size, station.y - station.size, e.detail.x, e.detail.y, GRID_SIZE)) {
+                                    Ifinity.Events.emit('station-click', { station });
+                                }
+                            });
+                            this.emitters.forEach(emitter => {
+                                if (Ifinity.Grid.isInCell(emitter.x - emitter.size, emitter.y - emitter.size, e.detail.x, e.detail.y, GRID_SIZE)) {
+                                    Ifinity.Events.emit('emitter-click', { emitter });
+                                }
+                            });
                         });
                     });
             }
