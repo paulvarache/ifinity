@@ -1,0 +1,33 @@
+<script>
+    (function (Ifinity) {
+        class Goal /*extends Ifinity.RenderedObject*/ {
+
+            constructor (ctx) {
+                this.ctx = ctx;
+                this.x = 0;
+                this.y = 0;
+                this.size = 15;
+                this.acceptedColor = null;
+            }
+
+            update (dt) {
+
+            }
+
+            render () {
+                this.ctx.save();
+                this.ctx.translate(this.x, this.y);
+                this.ctx.strokeStyle = this.data.acceptedColor;
+                this.ctx.lineWidth = 3;
+                this.ctx.beginPath();
+                this.ctx.arc(0, 0, this.size, 0, 2 * Math.PI);
+                this.ctx.stroke();
+                this.ctx.closePath();
+                this.ctx.restore();
+            }
+        }
+
+        Ifinity.Goal = Goal;
+
+    })(window.Ifinity = window.Ifinity || {});
+</script>

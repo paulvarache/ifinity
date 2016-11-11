@@ -1,5 +1,6 @@
 <link rel="import" href="./emitter.html">
 <link rel="import" href="./station.html">
+<link rel="import" href="./goal.html">
 <link rel="import" href="./world.html">
 <script>
     (function (Ifinity) {
@@ -10,6 +11,7 @@
 
                 this.emitters = [];
                 this.stations = [];
+                this.goals = [];
 
                 this.world = new Ifinity.World();
                 this.levelId = levelId;
@@ -38,17 +40,32 @@
                             this.stations.push(s);
                             this.world.add(s.id, s.x, s.y, s.size, s.data);
                         });
+
+                        level.goals.forEach((goal, index) => {
+                            let g = new Ifinity.Goal(this.ctx, this.world);
+                            g.x = goal.x;
+                            g.y = goal.y;
+                            g.data = {
+                                "acceptedColor": goal.acceptedColor
+                            }
+                            g.id = `goal${index}`;
+                            console.log("added anew goal", g);
+                            this.goals.push(g);
+                            this.world.add(g.id, g.x, g.y, g.size, g.data);
+                        });
                     });
             }
 
             update (dt) {
                 this.emitters.forEach(emitter => emitter.update(dt));
                 this.stations.forEach(station => station.update(dt));
+                this.goals.forEach(goal => goal.update(dt));
             }
 
             render () {
                 this.emitters.forEach(emitter => emitter.render());
                 this.stations.forEach(station => station.render());
+                this.goals.forEach(goal => goal.render());
             }
         }
 
