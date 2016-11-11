@@ -2,6 +2,8 @@
 <script>
     (function (Ifinity) {
 
+        const GRID_SIZE = 40;
+
         class Ball {
 
             constructor (ctx, world) {
@@ -11,10 +13,11 @@
                 this.y = 0;
                 this.vx = 0;
                 this.vy = 0;
-                this.size = 5;
+                this.size = 20;
                 this.color = '#red';
-                this.angle = 90;
+                this.angle = 90 * Math.PI / 180;
                 this.lastCollision = null;
+                this.boost = 0;
             }
 
             update (dt) {
@@ -36,8 +39,8 @@
 
                         if (collidedElement instanceof Ifinity.Station) {
                             collidedElement.triggerHit(this);
-                            this.angle = collidedElement.angle;
-                            direction = this.angle * Math.PI / 180;
+                            this.angle = collidedElement.angle * Math.PI / 180;
+                            direction = this.angle;
                             this.vx = Math.cos(direction) * 2;
                             this.vy = Math.sin(direction) * 2;
 
@@ -62,21 +65,23 @@
                 });
 
                 if (!this.removed) {
+                    let boostX = Math.cos(this.angle) * this.boost;
+                    let boostY = Math.cos(this.angle) * this.boost;
                     let box = this.world.move(this.id, this.vx, this.vy, this.angle);
                     this.x = box.x;
                     this.y = box.y;
+                    this.boost = Math.max(0, this.boost - 1);
                 }
             }
 
             render () {
                 this.ctx.save();
                 this.ctx.translate(this.x, this.y);
-                this.ctx.fillStyle = Ifinity.Colors[this.color];
-                this.ctx.lineWidth = 3;
-                this.ctx.beginPath();
-                this.ctx.arc(0, 0, this.size, 0, 2 * Math.PI);
-                this.ctx.fill();
-                this.ctx.closePath();
+                this.ctx.translate(-GRID_SIZE / 2, -GRID_SIZE / 2);
+                this.ctx.translate(this.size / 2, this.size / 2);
+                this.ctx.rotate(this.angle);
+                this.ctx.translate(-this.size / 2, -this.size / 2);
+                this.ctx.drawImage(Ifinity.AssetLoader.getImage(`ship-${this.color}`), 0, 0, this.size, this.size);
                 this.ctx.restore();
             }
         }

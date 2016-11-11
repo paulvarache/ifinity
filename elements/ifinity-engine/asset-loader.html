@@ -5,19 +5,25 @@
         class AssetLoader {
 
             constructor () {
-                
+                this.images = {};
             }
 
             getPath (ns, path) {
                 return `/assets/${ns}/${path}`;
             }
 
-            loadImage (path) {
+            getImage (id) {
+                return this.images[id];
+            }
+
+            loadImage (path, id) {
                 return new Promise((resolve, reject) => {
-                    let img = new Image(this.getPath('images', path));
-                    img.onlad = () => {
+                    let img = document.createElement('img');
+                    img.onload = () => {
+                        this.images[id] = img;
                         resolve(img);
                     };
+                    img.src = this.getPath('images', path);
                 });
             }
 

@@ -7,15 +7,16 @@
         "x": 0,
         "y": 0,
         "rotation": 90,
-        "code": "emitter.shoot('red')"
+        "code": "emitter.shoot()",
+        "frozen": true
     }],
     "stations": [{
         "x": 0,
         "y": 10,
-        "code": "station.angle = 2",
+        "code": "station.angle = 0",
         "toolbox": [{
-            "id": "yo",
-            "name": "YO",
+            "id": "station",
+            "name": "Station",
             "colour": "#ffff00",
             "blocks": [{
                 "id": "if_ship_color_is"
@@ -26,15 +27,15 @@
     }, {
         "x": 10,
         "y": 10,
-        "code": "station.angle = 260",
+        "code": "station.angle = 90",
         "toolbox": [{
-            "id": "yo",
-            "name": "YO",
+            "id": "station",
+            "name": "Station",
             "colour": "#ffff00",
             "blocks": [{
-                "id": "controls_if"
-            }, {
-                "id": "example_block"
+                "id": "if_ship_color_is"
+            },{
+                "id": "change_ship_direction"
             }]
         }]
     }],
