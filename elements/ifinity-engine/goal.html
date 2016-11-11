@@ -1,6 +1,7 @@
 <link rel="import" type="" href="./colors.html">
 <script>
     (function (Ifinity) {
+        const GRID_SIZE = 40;
         class Goal {
 
             constructor (ctx) {
@@ -18,12 +19,8 @@
             render () {
                 this.ctx.save();
                 this.ctx.translate(this.x, this.y);
-                this.ctx.strokeStyle = Ifinity.Colors[this.acceptedColor];
-                this.ctx.lineWidth = 3;
-                this.ctx.beginPath();
-                this.ctx.arc(0, 0, this.size, 0, 2 * Math.PI);
-                this.ctx.stroke();
-                this.ctx.closePath();
+                this.ctx.translate(-(this.size / 2), -(this.size / 2));
+                this.ctx.drawImage(Ifinity.AssetLoader.getImage(`pickup-${this.acceptedColor}`), 0, 0, this.size, this.size);
                 this.ctx.restore();
             }
         }

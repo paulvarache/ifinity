@@ -1,7 +1,8 @@
 <link rel="import" href="./ball.html">
 <script>
     (function (Ifinity) {
-        class Emitter /*extends Ifinity.RenderedObject*/ {
+        const GRID_SIZE = 40;
+        class Emitter {
 
             constructor (ctx, world) {
                 this.ctx = ctx;
@@ -10,21 +11,24 @@
                 this.y = 0;
                 this.rotation = 90 * Math.PI / 180;
                 this.power = 2;
-                this.size = 10;
+                this.size = 40;
+                this.color = 'blue';
                 this.balls = [];
             }
 
-            shoot (color) {
+            shoot () {
                 let ball = new Ifinity.Ball(this.ctx, this.world);
-                ball.x = this.x;
-                ball.y = this.y;
-                ball.color = color;
+                ball.x = this.x + 20;
+                ball.y = this.y + 20;
+                ball.boost = 3;
+                ball.angle = this.rotation;
+                ball.color = this.color;
                 ball.vx = Math.cos(this.rotation) * this.power;
                 ball.vy = Math.sin(this.rotation) * this.power;
                 ball.id = `ball${this.balls.length}`;
                 this.balls.push(ball);
 
-                this.world.add(ball.id, ball.x, ball.y, ball.size, ball.data);
+                this.world.add(ball.id, ball.x, ball.y, ball.size / 2, ball.data);
             }
 
             update (dt) {
@@ -34,20 +38,11 @@
             render () {
                 this.ctx.save();
                 this.ctx.translate(this.x, this.y);
-                this.ctx.strokeStyle = 'white';
-                this.ctx.lineWidth = 4;
-                this.ctx.beginPath();
-                this.ctx.arc(0, 0, this.size, 0, 2 * Math.PI);
-                this.ctx.stroke();
-                this.ctx.closePath();
-                let x, y;
-                x =  Math.cos(this.rotation) * 10;
-                y =  Math.sin(this.rotation) * 10;
-                this.ctx.fillStyle = 'red';
-                this.ctx.beginPath();
-                this.ctx.arc(x, y, 3, 0, 2 * Math.PI);
-                this.ctx.fill();
-                this.ctx.closePath();
+                this.ctx.translate(-GRID_SIZE / 2, -GRID_SIZE / 2);
+                this.ctx.translate(this.size / 2, this.size / 2);
+                this.ctx.rotate(this.rotation);
+                this.ctx.translate(-this.size / 2, -this.size / 2);
+                this.ctx.drawImage(Ifinity.AssetLoader.getImage(`emitter-${this.color}`), 0, 0, this.size, this.size);
                 this.ctx.restore();
 
                 this.balls.forEach(ball => ball.render());

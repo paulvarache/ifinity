@@ -55,17 +55,27 @@
             }
 
             load () {
-                Ifinity.AssetLoader.loadBuffer('highkick.wav').then(b => {
-                    Ifinity.SoundPlayer.add('station-hit', b);
-                });
-
-                Ifinity.AssetLoader.loadBuffer('syncbass2.wav').then(b => {
-                    Ifinity.SoundPlayer.add('successful-goal', b);
-                });
-
-                return Ifinity.AssetLoader.loadBuffer('pwmsyncsweep.wav').then(b => {
-                    return Ifinity.SoundPlayer.add('startup', b);
-                });
+                return Promise.all([
+                    Ifinity.AssetLoader.loadImage('ifinity_emitter_red.svg', 'emitter-red'),
+                    Ifinity.AssetLoader.loadImage('ifinity_emitter_blue.svg', 'emitter-blue'),
+                    Ifinity.AssetLoader.loadImage('ifinity_emitter_yellow.svg', 'emitter-yellow'),
+                    Ifinity.AssetLoader.loadImage('ifinity_ship_red.svg', 'ship-red'),
+                    Ifinity.AssetLoader.loadImage('ifinity_ship_blue.svg', 'ship-blue'),
+                    Ifinity.AssetLoader.loadImage('ifinity_ship_yellow.svg', 'ship-yellow'),
+                    Ifinity.AssetLoader.loadImage('ifinity_pickup_red.svg', 'pickup-red'),
+                    Ifinity.AssetLoader.loadImage('ifinity_pickup_blue.svg', 'pickup-blue'),
+                    Ifinity.AssetLoader.loadImage('ifinity_pickup_yellow.svg', 'pickup-yellow'),
+                    Ifinity.AssetLoader.loadImage('ifinity_station.svg', 'station'),
+                    Ifinity.AssetLoader.loadBuffer('highkick.wav').then(b => {
+                        return Ifinity.SoundPlayer.add('station-hit', b);
+                    }),
+                    Ifinity.AssetLoader.loadBuffer('syncbass2.wav').then(b => {
+                        return Ifinity.SoundPlayer.add('successful-goal', b);
+                    }),
+                    Ifinity.AssetLoader.loadBuffer('pwmsyncsweep.wav').then(b => {
+                        return Ifinity.SoundPlayer.add('startup', b);
+                    })
+                ]);
             }
 
             start () {
@@ -86,7 +96,7 @@
 
             render () {
                 this.camera.install();
-                this.ctx.fillStyle = 'black';
+                this.ctx.fillStyle = '#213642';
                 this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
                 this.grid.render();
                 this.level.render();

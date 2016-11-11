@@ -31,12 +31,12 @@
                         this.loadJson(this.json);
                         Ifinity.Events.on('cell-click', (e) => {
                             this.stations.forEach(station => {
-                                if (!station.frozen && Ifinity.Grid.isInCell(station.x - station.size, station.y - station.size, e.detail.x, e.detail.y, GRID_SIZE)) {
+                                if (!station.frozen && Ifinity.Grid.isInCell(station.x, station.y, e.detail.x, e.detail.y, GRID_SIZE)) {
                                     Ifinity.Events.emit('station-click', { station });
                                 }
                             });
                             this.emitters.forEach(emitter => {
-                                if (!emitter.frozen && Ifinity.Grid.isInCell(emitter.x - emitter.size, emitter.y - emitter.size, e.detail.x, e.detail.y, GRID_SIZE)) {
+                                if (!emitter.frozen && Ifinity.Grid.isInCell(emitter.x, emitter.y, e.detail.x, e.detail.y, GRID_SIZE)) {
                                     Ifinity.Events.emit('emitter-click', { emitter });
                                 }
                             });
@@ -75,7 +75,7 @@
                     s.code = stationData.code;
                     s.id = `station${index}`;
                     this.stations.push(s);
-                    this.world.add(s.id, s.x, s.y, s.size, s);
+                    this.world.add(s.id, s.x, s.y, s.size / 2, s);
                 });
 
                 json.goals.forEach((goal, index) => {
@@ -85,7 +85,7 @@
                     g.acceptedColor = goal.acceptedColor;
                     g.id = `goal${index}`;
                     this.goals.push(g);
-                    this.world.add(g.id, g.x, g.y, g.size, g);
+                    this.world.add(g.id, g.x, g.y, g.size / 2, g);
                 });
             }
 

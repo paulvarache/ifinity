@@ -1,13 +1,16 @@
 <script>
     (function (Ifinity) {
-        class Station /*extends Ifinity.RenderedObject*/ {
+
+        const GRID_SIZE = 40;
+
+        class Station {
 
             constructor (ctx) {
                 this.ctx = ctx;
                 this.x = 0;
                 this.y = 0;
                 this.angle = null;
-                this.size = 15;
+                this.size = 40;
 
                 this.listeners = [];
             }
@@ -19,12 +22,11 @@
             render () {
                 this.ctx.save();
                 this.ctx.translate(this.x, this.y);
-                this.ctx.strokeStyle = 'green';
-                this.ctx.lineWidth = 3;
-                this.ctx.beginPath();
-                this.ctx.arc(0, 0, this.size, 0, 2 * Math.PI);
-                this.ctx.stroke();
-                this.ctx.closePath();
+                this.ctx.translate(-GRID_SIZE / 2, -GRID_SIZE / 2);
+                this.ctx.translate(this.size / 2, this.size / 2);
+                this.ctx.rotate(this.rotation);
+                this.ctx.translate(-this.size / 2, -this.size / 2);
+                this.ctx.drawImage(Ifinity.AssetLoader.getImage('station'), 0, 0, this.size, this.size);
                 this.ctx.restore();
             }
 
