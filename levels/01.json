@@ -1,7 +1,7 @@
 {
     "button": {
-        "x": 2,
-        "y": 2
+        "x": 6,
+        "y": 6
     },
     "emitters": [{
         "x": 0,
@@ -11,7 +11,7 @@
     }],
     "stations": [{
         "x": 0,
-        "y": 10,
+        "y": 2,
         "code": "station.angle = 2",
         "toolbox": [{
             "id": "yo",
@@ -24,8 +24,8 @@
             }]
         }]
     }, {
-        "x": 10,
-        "y": 10,
+        "x": 2,
+        "y": 2,
         "code": "station.angle = 260",
         "toolbox": [{
             "id": "yo",
