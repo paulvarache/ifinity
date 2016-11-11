@@ -11,11 +11,28 @@
                 this.vy = 0;
                 this.size = 5;
                 this.color = 'red';
+                this.angle = 90;
+                this.lastCollision = null;
             }
 
             update (dt) {
-                let cols = this.world.getCollisions(this.id);
-                let box = this.world.move(this.id, this.vx, this.vy);
+                let cols = this.world.getCollisions(this.id),
+                    collidedStation,
+                    direction;
+
+                cols.forEach(elem => {
+                    if (elem !== this.lastCollision) {
+                        collidedStation = this.world.get(cols[0]).data;
+                        this.angle = collidedStation.angle;
+                        direction = this.angle * Math.PI / 180;
+                        this.vx = Math.cos(direction) * 2;
+                        this.vy = Math.sin(direction) * 2;
+
+                        this.lastCollision = elem;
+                    }
+                });
+
+                let box = this.world.move(this.id, this.vx, this.vy, this.angle);
                 this.x = box.x;
                 this.y = box.y;
             }
@@ -35,5 +52,5 @@
 
         Ifinity.Ball = Ball;
 
-    })(window.Ifinity = window.Ifinity || {});    
+    })(window.Ifinity = window.Ifinity || {});
 </script>

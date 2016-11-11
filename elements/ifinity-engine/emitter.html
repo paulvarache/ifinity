@@ -10,9 +10,7 @@
                 this.y = 0;
                 this.rotation = 90 * Math.PI / 180;
                 this.power = 2;
-
                 this.balls = [];
-
                 setTimeout(this.shoot.bind(this), 1000);
             }
 
@@ -24,7 +22,8 @@
                 ball.vy = Math.sin(this.rotation) * this.power;
                 ball.id = `ball${this.balls.length}`;
                 this.balls.push(ball);
-                this.world.add(ball.id, ball.x, ball.y, ball.size);
+
+                this.world.add(ball.id, ball.x, ball.y, ball.size, ball.data);
             }
 
             update (dt) {
@@ -56,5 +55,5 @@
 
         Ifinity.Emitter = Emitter;
 
-    })(window.Ifinity = window.Ifinity || {});    
+    })(window.Ifinity = window.Ifinity || {});
 </script>
