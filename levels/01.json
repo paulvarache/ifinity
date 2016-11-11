@@ -17,7 +17,7 @@
         "toolbox": [{
             "id": "station",
             "name": "Station",
-            "colour": "#ffff00",
+            "colour": "#fc7362",
             "blocks": [{
                 "id": "if_ship_color_is"
             },{
@@ -31,7 +31,7 @@
         "toolbox": [{
             "id": "station",
             "name": "Station",
-            "colour": "#ffff00",
+            "colour": "#fc7362",
             "blocks": [{
                 "id": "if_ship_color_is"
             },{
@@ -42,6 +42,6 @@
     "goals": [{
         "x": 10,
         "y": 9,
-        "acceptedColor": "red"
+        "acceptedColor": "blue"
     }]
 }

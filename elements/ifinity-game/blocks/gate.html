@@ -1,4 +1,5 @@
 <script>
+  const COLOUR = '#fc7362';
     Blockly.Blocks.change_ship_direction = {
         init: function () {
             let json = {
@@ -10,7 +11,7 @@
                   angle: 90
                 }],
               inputsInline: true,
-              colour: "#ff00ff",
+              colour: COLOUR,
               previousStatement: null,
               nextStatement: null
             };
@@ -56,7 +57,7 @@
                   name: "STATEMENT"
                 }
               ],
-              "colour": '#ff00ff'
+              colour: COLOUR
             };
 
             this.jsonInit(json);

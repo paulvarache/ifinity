@@ -1,8 +1,12 @@
 <link rel="import" href="../kano-blockly/kano-blockly.html">
 <link rel="import" href="./blocks/gate.html">
 <link rel="import" href="../ifinity-engine/ifinity-engine.html">
+<link rel="import" href="../kano-style/typography.html">
 <template id="ifinity-game">
     <style>
+        html {
+            font-family: var(--font-body);
+        }
         *:focus {
             outline: none !important;
         }
@@ -101,7 +105,6 @@
                     this.blockly.save().then(snapshot => {
                         this.currentNode.code = snapshot.javascript;
                         this.currentNode.blocks = snapshot.blocks;
-                        console.log(this.currentNode);
                     });
                     this.blockly.animate({
                         opacity: [1, 0],
