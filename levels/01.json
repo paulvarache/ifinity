@@ -12,7 +12,7 @@
     }],
     "stations": [{
         "x": 0,
-        "y": 10,
+        "y": 3,
         "code": "station.angle = 0",
         "toolbox": [{
             "id": "station",
@@ -25,8 +25,8 @@
             }]
         }]
     }, {
-        "x": 10,
-        "y": 10,
+        "x": 3,
+        "y": 3,
         "code": "station.angle = 90",
         "toolbox": [{
             "id": "station",

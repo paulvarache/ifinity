@@ -39,10 +39,12 @@
 
                         if (collidedElement instanceof Ifinity.Station) {
                             collidedElement.triggerHit(this);
-                            this.angle = collidedElement.angle * Math.PI / 180;
-                            direction = this.angle;
-                            this.vx = Math.cos(direction) * 2;
-                            this.vy = Math.sin(direction) * 2;
+
+                            this.angle = collidedElement.angle;
+                            direction = (180 - this.angle) * Math.PI / 180;
+
+                            this.vx = Math.cos(direction) * -2;
+                            this.vy = Math.sin(direction) * -2;
 
                             Ifinity.SoundPlayer.play('station-hit');
                         } else if (collidedElement instanceof Ifinity.Goal) {
