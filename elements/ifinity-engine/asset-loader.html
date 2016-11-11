@@ -1,0 +1,37 @@
+<link rel="import" href="./sound-player.html">
+<script>
+    (function (Ifinity) {
+
+        class AssetLoader {
+
+            constructor () {
+                
+            }
+
+            getPath (ns, path) {
+                return `/assets/${ns}/${path}`;
+            }
+
+            loadImage (path) {
+                return new Promise((resolve, reject) => {
+                    let img = new Image(this.getPath('images', path));
+                    img.onlad = () => {
+                        resolve(img);
+                    };
+                });
+            }
+
+            loadBuffer (path) {
+                return fetch(this.getPath('sounds', path))
+                    .then(r => r.arrayBuffer())
+                    .then(ab => {
+                        return Ifinity.SoundPlayer.abtob(ab);
+                    });
+            }
+
+        }
+
+        Ifinity.AssetLoader = new AssetLoader();
+
+    })(window.Ifinity = window.Ifinity || {});    
+</script>

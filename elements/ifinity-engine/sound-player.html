@@ -1,0 +1,33 @@
+<script>
+    (function (Ifinity) {
+
+        class SoundPlayer /*extends Ifinity.RenderedObject*/ {
+
+            constructor () {
+                this.ctx = new AudioContext();
+                this.sounds = {};
+            }
+
+            add (id, buffer) {
+                this.sounds[id] = buffer;
+            }
+
+            abtob (ab) {
+                return this.ctx.decodeAudioData(ab);
+            }
+
+            play (id) {
+                let source = this.ctx.createBufferSource();
+                source.buffer = this.sounds[id];
+
+                source.connect(this.ctx.destination);
+
+                source.start();
+            }
+
+        }
+
+        Ifinity.SoundPlayer = new SoundPlayer();
+
+    })(window.Ifinity = window.Ifinity || {});    
+</script>
