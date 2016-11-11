@@ -5,6 +5,7 @@
 <link rel="import" href="./sound-player.html">
 <link rel="import" href="./asset-loader.html">
 <link rel="import" href="./mouse.html">
+<link rel="import" href="./events.html">
 <script>
     (function (Ifinity) {
 
@@ -34,9 +35,13 @@
             }
 
             setup () {
+                Ifinity.Events.init(this);
                 Ifinity.Mouse.grab(this);
                 Ifinity.Mouse.onClick((e) => {
-                    console.log(Math.floor(e.x / GRID_SIZE), Math.floor(e.y / GRID_SIZE));
+                    Ifinity.Events.emit('cell-click', {
+                        x: Math.floor(e.x / GRID_SIZE),
+                        y: Math.floor(e.y / GRID_SIZE)
+                    });
                 });
                 this.level = new Ifinity.Level(this.ctx, '01');
                 this.level.setup();

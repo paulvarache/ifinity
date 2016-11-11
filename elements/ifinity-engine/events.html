@@ -1,0 +1,29 @@
+<script>
+    (function (Ifinity) {
+
+        class Events {
+
+            constructor () {
+                this.clickCbs = [];
+            }
+
+            init (parent) {
+                this.parent = parent;
+            }
+
+            emit (name, detail) {
+                let e = new Event(name);
+                e.detail = detail;
+                this.parent.dispatchEvent(e);
+            }
+
+            on (name, cb) {
+                this.parent.addEventListener(name, cb);
+            }
+
+        }
+
+        Ifinity.Events = new Events();
+
+    })(window.Ifinity = window.Ifinity || {});    
+</script>

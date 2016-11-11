@@ -10,6 +10,7 @@
                 this.y = 0;
                 this.rotation = 90 * Math.PI / 180;
                 this.power = 2;
+                this.size = 10;
                 this.balls = [];
                 setTimeout(this.shoot.bind(this), 1000);
             }
@@ -36,7 +37,7 @@
                 this.ctx.strokeStyle = 'white';
                 this.ctx.lineWidth = 4;
                 this.ctx.beginPath();
-                this.ctx.arc(0, 0, 10, 0, 2 * Math.PI);
+                this.ctx.arc(0, 0, this.size, 0, 2 * Math.PI);
                 this.ctx.stroke();
                 this.ctx.closePath();
                 let x, y;
