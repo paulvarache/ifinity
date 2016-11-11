@@ -1,0 +1,60 @@
+<link rel="import" href="./ball.html">
+<script>
+    (function (Ifinity) {
+        class Emitter /*extends Ifinity.RenderedObject*/ {
+
+            constructor (ctx, world) {
+                this.ctx = ctx;
+                this.world = world;
+                this.x = 0;
+                this.y = 0;
+                this.rotation = 90 * Math.PI / 180;
+                this.power = 2;
+
+                this.balls = [];
+
+                setTimeout(this.shoot.bind(this), 1000);
+            }
+
+            shoot () {
+                let ball = new Ifinity.Ball(this.ctx, this.world);
+                ball.x = this.x;
+                ball.y = this.y;
+                ball.vx = Math.cos(this.rotation) * this.power;
+                ball.vy = Math.sin(this.rotation) * this.power;
+                ball.id = `ball${this.balls.length}`;
+                this.balls.push(ball);
+                this.world.add(ball.id, ball.x, ball.y, ball.size);
+            }
+
+            update (dt) {
+                this.balls.forEach(ball => ball.update(dt));
+            }
+
+            render () {
+                this.ctx.save();
+                this.ctx.translate(this.x, this.y);
+                this.ctx.strokeStyle = 'white';
+                this.ctx.lineWidth = 4;
+                this.ctx.beginPath();
+                this.ctx.arc(0, 0, 10, 0, 2 * Math.PI);
+                this.ctx.stroke();
+                this.ctx.closePath();
+                let x, y;
+                x =  Math.cos(this.rotation) * 10;
+                y =  Math.sin(this.rotation) * 10;
+                this.ctx.fillStyle = 'red';
+                this.ctx.beginPath();
+                this.ctx.arc(x, y, 3, 0, 2 * Math.PI);
+                this.ctx.fill();
+                this.ctx.closePath();
+                this.ctx.restore();
+
+                this.balls.forEach(ball => ball.render());
+            }
+        }
+
+        Ifinity.Emitter = Emitter;
+
+    })(window.Ifinity = window.Ifinity || {});    
+</script>

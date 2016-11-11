@@ -1,0 +1,39 @@
+<script>
+    (function (Ifinity) {
+        class Ball /*extends Ifinity.RenderedObject*/ {
+
+            constructor (ctx, world) {
+                this.ctx = ctx;
+                this.world = world;
+                this.x = 0;
+                this.y = 0;
+                this.vx = 0;
+                this.vy = 0;
+                this.size = 5;
+                this.color = 'red';
+            }
+
+            update (dt) {
+                let cols = this.world.getCollisions(this.id);
+                let box = this.world.move(this.id, this.vx, this.vy);
+                this.x = box.x;
+                this.y = box.y;
+            }
+
+            render () {
+                this.ctx.save();
+                this.ctx.translate(this.x, this.y);
+                this.ctx.fillStyle = this.color;
+                this.ctx.lineWidth = 3;
+                this.ctx.beginPath();
+                this.ctx.arc(0, 0, this.size, 0, 2 * Math.PI);
+                this.ctx.fill();
+                this.ctx.closePath();
+                this.ctx.restore();
+            }
+        }
+
+        Ifinity.Ball = Ball;
+
+    })(window.Ifinity = window.Ifinity || {});    
+</script>

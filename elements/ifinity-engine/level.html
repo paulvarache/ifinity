@@ -1,0 +1,55 @@
+<link rel="import" href="./emitter.html">
+<link rel="import" href="./station.html">
+<link rel="import" href="./world.html">
+<script>
+    (function (Ifinity) {
+        class Level /*extends Ifinity.RenderedObject*/ {
+
+            constructor (ctx, levelId) {
+                this.ctx = ctx;
+
+                this.emitters = [];
+                this.stations = [];
+
+                this.world = new Ifinity.World();
+                this.levelId = levelId;
+            }
+
+            setup () {
+                fetch(`/levels/${this.levelId}.json`)
+                    .then(r => r.json())
+                    .then(level => {
+                        level.emitters.forEach(emitterData => {
+                            let e = new Ifinity.Emitter(this.ctx, this.world);
+                            e.x = emitterData.x;
+                            e.y = emitterData.y;
+                            e.rotation = emitterData.rotation * Math.PI / 180;
+                            this.emitters.push(e);
+                        });
+
+                        level.stations.forEach((stationData, index) => {
+                            let s = new Ifinity.Station(this.ctx, this.world);
+                            s.x = stationData.x;
+                            s.y = stationData.y;
+                            s.id = `station${index}`;
+                            this.stations.push(s);
+                            this.world.add(s.id, s.x, s.y, s.size);
+                        });
+                    });
+            }
+
+            update (dt) {
+                this.emitters.forEach(emitter => emitter.update(dt));
+                this.stations.forEach(station => station.update(dt));
+            }
+
+            render () {
+                this.emitters.forEach(emitter => emitter.render());
+                this.stations.forEach(station => station.render());
+            }
+        }
+
+        Ifinity.Level = Level;
+
+    })(window.Ifinity = window.Ifinity || {});    
+</script>

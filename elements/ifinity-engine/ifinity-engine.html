@@ -1,0 +1,54 @@
+<link rel="import" href="./camera.html">
+<link rel="import" href="./emitter.html">
+<link rel="import" href="./level.html">
+<script>
+    (function (Ifinity) {
+        class Engine extends HTMLElement {
+
+            constructor () {
+                super();
+                this.lastFrame = 0;
+            }
+
+            connectedCallback () {
+                requestAnimationFrame(() => {
+                    this.canvas = document.createElement('canvas');
+                    this.appendChild(this.canvas);
+                    let rect = this.getBoundingClientRect();
+                    this.canvas.width = rect.width;
+                    this.canvas.height = rect.height;
+                    this.ctx = this.canvas.getContext('2d');
+                    this.setup();
+                    this.update(0);
+                });
+            }
+
+            setup () {
+                this.level = new Ifinity.Level(this.ctx, '01');
+                this.level.setup();
+                this.camera = new Ifinity.Camera(this.ctx);
+            }
+
+            update (timestamp) {
+                let dt = timestamp - this.lastFrame;
+                this.lastFrame = timestamp;
+                this.level.update(dt);
+
+                this.render();
+                requestAnimationFrame(this.update.bind(this));
+            }
+
+            render () {
+                this.camera.install();
+                this.ctx.fillStyle = 'black';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                this.level.render();
+                this.camera.remove();
+            }
+        }
+
+        Ifinity.Engine = Engine;
+
+        customElements.define('ifinity-engine', Ifinity.Engine);
+    })(window.Ifinity = window.Ifinity || {});    
+</script>

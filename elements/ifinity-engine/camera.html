@@ -1,0 +1,44 @@
+<script>
+    (function (Ifinity) {
+        class Camera {
+
+            constructor (ctx) {
+                this.ctx = ctx;
+                this.x = 0;
+                this.y = 0;
+                this.rotation = 0;
+                this.scaleX = 1;
+                this.scaleY = 1;
+            }
+
+            install () {
+                this.ctx.save();
+                this.ctx.rotate(-this.rotation);
+                this.ctx.scale(1 / this.scaleX, 1 / this.scaleY);
+                this.ctx.translate(-this.x, -this.y);
+            }
+
+            remove () {
+                this.ctx.restore();
+            }
+
+            move (x, y) {
+                this.x += x || 0;
+                this.y += y || 0;
+            }
+
+            rotate (a) {
+                this.rotation += a;
+            }
+
+            scale (x, y) {
+                x = x || 1;
+                this.scaleX *= x;
+                this.scaleY *= (x || y);
+            }
+        }
+
+        Ifinity.Camera = Camera;
+
+    })(window.Ifinity = window.Ifinity || {});    
+</script>

@@ -1,0 +1,60 @@
+<script>
+    (function (Ifinity) {
+        class World /*extends Ifinity.RenderedObject*/ {
+
+            constructor (ctx) {
+                this.objects = [];
+            }
+
+            get (id) {
+                return this.objects[id];
+            }
+
+            add (id, x, y, size, data) {
+                this.objects[id] = { x, y, size, data };
+            }
+
+            remove (id) {
+                let obj = this.objects[id];
+                delete this.objects[id];
+                return obj;
+            }
+
+            collides (id1, id2) {
+                let obj1 = this.get(id1),
+                    obj2 = this.get(id2),
+                    dx, dy, distance;
+                if (!obj1 || !obj2) {
+                    throw new Error('Missing object');
+                }
+
+                dx = obj1.x - obj2.x;
+                dy = obj1.y - obj2.y;
+                distance = Math.sqrt(dx * dx + dy * dy);
+
+                return distance < obj1.size + obj2.size;
+            }
+
+            getCollisions (id) {
+                return Object.keys(this.objects).filter(key => {
+                    if (key === id) {
+                        return false;
+                    }
+                    return this.collides(id, key);
+                });
+            }
+
+            move (id, x, y) {
+                let obj = this.get(id);
+
+                obj.x += x;
+                obj.y += y;
+
+                return obj;
+            }
+        }
+
+        Ifinity.World = World;
+
+    })(window.Ifinity = window.Ifinity || {});    
+</script>
