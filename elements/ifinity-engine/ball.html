@@ -37,10 +37,13 @@
                             direction = this.angle * Math.PI / 180;
                             this.vx = Math.cos(direction) * 2;
                             this.vy = Math.sin(direction) * 2;
+
+                            Ifinity.SoundPlayer.play('station-hit');
                         } else if ("acceptedColor" in collidedElement) {
                             if (this.color == collidedElement.acceptedColor) {
 
                                 // Display the animation
+                                Ifinity.SoundPlayer.play('successful-goal');
 
                                 this.world.remove(this.id);
                                 this.removed = true;

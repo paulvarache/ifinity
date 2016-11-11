@@ -50,6 +50,14 @@
             }
 
             load () {
+                Ifinity.AssetLoader.loadBuffer('highkick.wav').then(b => {
+                    Ifinity.SoundPlayer.add('station-hit', b);
+                });
+
+                Ifinity.AssetLoader.loadBuffer('syncbass2.wav').then(b => {
+                    Ifinity.SoundPlayer.add('successful-goal', b);
+                });
+
                 return Ifinity.AssetLoader.loadBuffer('pwmsyncsweep.wav').then(b => {
                     return Ifinity.SoundPlayer.add('startup', b);
                 });
