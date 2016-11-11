@@ -1,8 +1,11 @@
 <link rel="import" href="../kano-blockly/kano-blockly.html">
-<link rel="import" href="./blocks/example.html">
+<link rel="import" href="./blocks/gate.html">
 <link rel="import" href="../ifinity-engine/ifinity-engine.html">
 <template id="ifinity-game">
     <style>
+        *:focus {
+            outline: none !important;
+        }
         ifinity-game {
             display: flex;
         }
@@ -16,8 +19,23 @@
             left: 40px;
             right: 40px;
         }
+        .splashscreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url(/assets/splashscreen.png);
+            background-color: #213642;
+            background-size: contain;
+            background-position: center top;
+            background-repeat: no-repeat;
+            transition: opacity ease-out 200ms;
+            pointer-events: none;
+        }
     </style>
     <ifinity-engine></ifinity-engine>
+    <div class="splashscreen"></div>
 </template>
 <script>
     (function (Ifinity) {
@@ -36,7 +54,11 @@
                 this.appendChild(this.blockly);
 
                 this.engine.addEventListener('station-click', (e) => {
-                    this.loadStation(e.detail.station);
+                    this.loadNode(e.detail.station);
+                });
+
+                this.engine.addEventListener('emitter-click', (e) => {
+                    this.loadNode(e.detail.emitter);
                 });
 
                 this.engine.addEventListener('click', (e) => {
@@ -45,6 +67,12 @@
 
                 this.blocklyOpened = true;
                 this.hideBlockly(true);
+                setTimeout(() => {
+                    this.querySelector('.splashscreen').style.opacity = 0;
+                    setTimeout(() => {
+                        this.engine.start();
+                    }, 200);
+                }, 2000);
             }
 
             showBlockly () {
@@ -70,6 +98,11 @@
                 if (now) {
                     this.blockly.style.visibility = 'hidden';
                 } else {
+                    this.blockly.save().then(snapshot => {
+                        this.currentNode.code = snapshot.javascript;
+                        this.currentNode.blocks = snapshot.blocks;
+                        console.log(this.currentNode);
+                    });
                     this.blockly.animate({
                         opacity: [1, 0],
                     }, {
@@ -81,11 +114,12 @@
                 }
             }
 
-            loadStation (station) {
-                this.blockly.toolbox = station.toolbox;
-                if (station.blocks) {
-                    this.blockly.load({ blocks: station.blocks });
+            loadNode (node) {
+                this.blockly.toolbox = node.toolbox;
+                if (node.blocks) {
+                    this.blockly.load({ blocks: node.blocks });
                 }
+                this.currentNode = node;
                 this.showBlockly();
             }
 

@@ -5,13 +5,14 @@
                 id: 'example_block',
                 colour: '#ff00ff',
                 message0: 'Example block',
-                output: 'String'
+                previousStatement: null,
+                nextStatement: null,
             }
             this.jsonInit(json);
         }
     };
 
     Blockly.JavaScript.example_block = function (block) {
-        return ['"output string"'];
+        return 'station.angle = 90';
     };
 </script>

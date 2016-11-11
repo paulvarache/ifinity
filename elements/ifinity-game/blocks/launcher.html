@@ -1,0 +1,39 @@
+<script>
+    Blockly.Blocks.launch_ship = {
+        init: function () {
+            let json = {
+              id: "launch_ship",
+              lastDummyAlign0: "RIGHT",
+              message0: "launch ship %1 angle %2 %3 color %4",
+              args0: [
+                {
+                  type: "input_dummy"
+                },
+                {
+                  type: "field_number",
+                  name: "shipAngle",
+                  value: 0
+                },
+                {
+                  type: "input_dummy",
+                  align: "RIGHT"
+                },
+                {
+                  type: "field_colour",
+                  name: "shipColor",
+                  colour: "#ff0000"
+                }
+              ],
+              colour: 210
+            }
+            this.jsonInit(json);
+        }
+    };
+
+    Blockly.JavaScript.launch_ship = function (block) {
+        var number_shipangle = block.getFieldValue('shipAngle');
+        var colour_shipcolor = block.getFieldValue('shipColor');
+        var code = '...;\n';
+        return code;
+    };
+</script>

@@ -1,6 +1,7 @@
+<link rel="import" type="" href="./colors.html">
 <script>
     (function (Ifinity) {
-        class Goal /*extends Ifinity.RenderedObject*/ {
+        class Goal {
 
             constructor (ctx) {
                 this.ctx = ctx;
@@ -17,7 +18,7 @@
             render () {
                 this.ctx.save();
                 this.ctx.translate(this.x, this.y);
-                this.ctx.strokeStyle = this.data.acceptedColor;
+                this.ctx.strokeStyle = Ifinity.Colors[this.acceptedColor];
                 this.ctx.lineWidth = 3;
                 this.ctx.beginPath();
                 this.ctx.arc(0, 0, this.size, 0, 2 * Math.PI);

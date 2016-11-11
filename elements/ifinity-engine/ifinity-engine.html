@@ -6,6 +6,7 @@
 <link rel="import" href="./asset-loader.html">
 <link rel="import" href="./mouse.html">
 <link rel="import" href="./events.html">
+<link rel="import" href="./ui.html">
 <script>
     (function (Ifinity) {
 
@@ -28,7 +29,10 @@
                     this.ctx = this.canvas.getContext('2d');
                     this.setup();
                     this.load().then(() => {
-                        this.update(0);
+                        if (this.started) {
+                            this.update(0);
+                        }
+                        this.ready = true;
                         Ifinity.SoundPlayer.play('startup');
                     });
                 });
@@ -36,6 +40,7 @@
 
             setup () {
                 Ifinity.Events.init(this);
+                Ifinity.UI.init(this);
                 Ifinity.Mouse.grab(this);
                 Ifinity.Mouse.onClick((e) => {
                     Ifinity.Events.emit('cell-click', {
@@ -61,6 +66,13 @@
                 return Ifinity.AssetLoader.loadBuffer('pwmsyncsweep.wav').then(b => {
                     return Ifinity.SoundPlayer.add('startup', b);
                 });
+            }
+
+            start () {
+                if (this.ready) {
+                    this.update(0);
+                }
+                this.started = true;
             }
 
             update (timestamp) {

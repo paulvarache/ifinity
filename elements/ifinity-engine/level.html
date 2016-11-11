@@ -4,6 +4,7 @@
 <link rel="import" href="./world.html">
 <link rel="import" href="./events.html">
 <link rel="import" href="./grid.html">
+<link rel="import" href="./ui.html">
 <script>
     (function (Ifinity) {
 
@@ -26,54 +27,66 @@
                 fetch(`/levels/${this.levelId}.json`)
                     .then(r => r.json())
                     .then(level => {
-                        level.emitters.forEach(emitterData => {
-                            let e = new Ifinity.Emitter(this.ctx, this.world);
-                            e.x = emitterData.x * GRID_SIZE + GRID_SIZE / 2;
-                            e.y = emitterData.y * GRID_SIZE + GRID_SIZE / 2;
-                            e.rotation = emitterData.rotation * Math.PI / 180;
-                            this.emitters.push(e);
-                        });
-
-                        level.stations.forEach((stationData, index) => {
-                            let s = new Ifinity.Station(this.ctx, this.world);
-                            s.x = stationData.x * GRID_SIZE + GRID_SIZE / 2;
-                            s.y = stationData.y * GRID_SIZE + GRID_SIZE / 2;
-                            s.data = {
-                                angle: stationData.angle
-                            };
-                            s.toolbox = stationData.toolbox;
-                            s.blocks = stationData.blocks;
-                            s.id = `station${index}`;
-                            this.stations.push(s);
-                            this.world.add(s.id, s.x, s.y, s.size, s.data);
-                        });
-
-                        level.goals.forEach((goal, index) => {
-                            let g = new Ifinity.Goal(this.ctx, this.world);
-                            g.x = goal.x * GRID_SIZE + GRID_SIZE / 2;
-                            g.y = goal.y * GRID_SIZE + GRID_SIZE / 2;
-                            g.data = {
-                                "acceptedColor": goal.acceptedColor
-                            }
-                            g.id = `goal${index}`;
-                            console.log("added anew goal", g);
-                            this.goals.push(g);
-                            this.world.add(g.id, g.x, g.y, g.size, g.data);
-                        });
-
+                        this.json = level;
+                        this.loadJson(this.json);
                         Ifinity.Events.on('cell-click', (e) => {
                             this.stations.forEach(station => {
-                                if (Ifinity.Grid.isInCell(station.x - station.size, station.y - station.size, e.detail.x, e.detail.y, GRID_SIZE)) {
+                                if (!station.frozen && Ifinity.Grid.isInCell(station.x - station.size, station.y - station.size, e.detail.x, e.detail.y, GRID_SIZE)) {
                                     Ifinity.Events.emit('station-click', { station });
                                 }
                             });
                             this.emitters.forEach(emitter => {
-                                if (Ifinity.Grid.isInCell(emitter.x - emitter.size, emitter.y - emitter.size, e.detail.x, e.detail.y, GRID_SIZE)) {
+                                if (!emitter.frozen && Ifinity.Grid.isInCell(emitter.x - emitter.size, emitter.y - emitter.size, e.detail.x, e.detail.y, GRID_SIZE)) {
                                     Ifinity.Events.emit('emitter-click', { emitter });
                                 }
                             });
                         });
+
+                        Ifinity.UI.createButton('initiate' ,'Initiate', {
+                            top: `${level.button.x * GRID_SIZE}px`,
+                            left: `${level.button.y * GRID_SIZE}px`,
+                            padding: '7px',
+                            borderRadius: '40px',
+                            border: '1px solid grey'
+                        });
+
+                        Ifinity.UI.on('initiate', 'click', () => {
+                            this.toggleRun();
+                        });
                     });
+            }
+
+            loadJson (json) {
+                json.emitters.forEach(emitterData => {
+                    let e = new Ifinity.Emitter(this.ctx, this.world);
+                    e.x = emitterData.x * GRID_SIZE + GRID_SIZE / 2;
+                    e.y = emitterData.y * GRID_SIZE + GRID_SIZE / 2;
+                    e.rotation = emitterData.rotation * Math.PI / 180;
+                    e.code = emitterData.code;
+                    this.emitters.push(e);
+                });
+
+                json.stations.forEach((stationData, index) => {
+                    let s = new Ifinity.Station(this.ctx, this.world);
+                    s.x = stationData.x * GRID_SIZE + GRID_SIZE / 2;
+                    s.y = stationData.y * GRID_SIZE + GRID_SIZE / 2;
+                    s.toolbox = stationData.toolbox;
+                    s.blocks = stationData.blocks;
+                    s.code = stationData.code;
+                    s.id = `station${index}`;
+                    this.stations.push(s);
+                    this.world.add(s.id, s.x, s.y, s.size, s);
+                });
+
+                json.goals.forEach((goal, index) => {
+                    let g = new Ifinity.Goal(this.ctx, this.world);
+                    g.x = goal.x * GRID_SIZE + GRID_SIZE / 2;
+                    g.y = goal.y * GRID_SIZE + GRID_SIZE / 2;
+                    g.acceptedColor = goal.acceptedColor;
+                    g.id = `goal${index}`;
+                    this.goals.push(g);
+                    this.world.add(g.id, g.x, g.y, g.size, g);
+                });
             }
 
             update (dt) {
@@ -86,6 +99,40 @@
                 this.emitters.forEach(emitter => emitter.render());
                 this.stations.forEach(station => station.render());
                 this.goals.forEach(goal => goal.render());
+            }
+
+            start () {
+                Ifinity.UI.get('initiate').innerText = 'Cancel mission';
+                this.running = true;
+                this.runCode();
+            }
+
+            stop () {
+                Ifinity.UI.get('initiate').innerText = 'Initiate';
+                this.emitters = [];
+                this.stations = [];
+                this.loadJson(this.json);
+                this.running = false;
+            }
+
+            toggleRun () {
+                if (this.running) {
+                    this.stop();
+                } else {
+                    this.start();
+                }
+            }
+
+            runCode () {
+                let code = '';
+                this.emitters.forEach(emitter => {
+                    let fn = new Function(`let emitter = arguments[0];\n${emitter.code}`);
+                    fn(emitter);
+                });
+                this.stations.forEach(station => {
+                    let fn = new Function(`let station = arguments[0];\n${station.code}`);
+                    fn(station);
+                });
             }
         }
 

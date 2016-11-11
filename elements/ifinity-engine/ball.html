@@ -1,6 +1,8 @@
+<link rel="import" href="./colors.html">
 <script>
     (function (Ifinity) {
-        class Ball /*extends Ifinity.RenderedObject*/ {
+
+        class Ball {
 
             constructor (ctx, world) {
                 this.ctx = ctx;
@@ -10,7 +12,7 @@
                 this.vx = 0;
                 this.vy = 0;
                 this.size = 5;
-                this.color = '#00BFFF';
+                this.color = '#red';
                 this.angle = 90;
                 this.lastCollision = null;
             }
@@ -32,14 +34,15 @@
                             return;
                         }
 
-                        if ("angle" in collidedElement) {
+                        if (collidedElement instanceof Ifinity.Station) {
+                            collidedElement.triggerHit(this);
                             this.angle = collidedElement.angle;
                             direction = this.angle * Math.PI / 180;
                             this.vx = Math.cos(direction) * 2;
                             this.vy = Math.sin(direction) * 2;
 
                             Ifinity.SoundPlayer.play('station-hit');
-                        } else if ("acceptedColor" in collidedElement) {
+                        } else if (collidedElement instanceof Ifinity.Goal) {
                             if (this.color == collidedElement.acceptedColor) {
 
                                 // Display the animation
@@ -53,7 +56,6 @@
                         } else {
                             console.log("Don't know how to deal with this kind of collision ", collidedElement);
                         }
-
 
                         this.lastCollision = elem;
                     }
@@ -69,7 +71,7 @@
             render () {
                 this.ctx.save();
                 this.ctx.translate(this.x, this.y);
-                this.ctx.fillStyle = this.color;
+                this.ctx.fillStyle = Ifinity.Colors[this.color];
                 this.ctx.lineWidth = 3;
                 this.ctx.beginPath();
                 this.ctx.arc(0, 0, this.size, 0, 2 * Math.PI);

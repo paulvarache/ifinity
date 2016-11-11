@@ -1,0 +1,40 @@
+<script>
+    (function (Ifinity) {
+
+        class UI {
+
+            constructor () {
+                this.elements = {};
+            }
+
+            init (parent) {
+                this.parent = parent;
+            }
+
+            on (id, name, cb) {
+                this.get(id).addEventListener(name, cb);
+            }
+
+            get (id) {
+                return this.elements[id];
+            }
+
+            createDOM (name) {
+                let el = document.createElement(name);
+                el.style.position = 'absolute';
+                this.parent.appendChild(el);
+                return el;
+            }
+
+            createButton (id, content, style={}) {
+                let button = this.createDOM('button');
+                this.elements[id] = button;
+                button.innerText = content;
+                Object.assign(button.style, style);
+            }
+        }
+
+        Ifinity.UI = new UI();
+
+    })(window.Ifinity = window.Ifinity || {});    
+</script>

@@ -12,14 +12,13 @@
                 this.power = 2;
                 this.size = 10;
                 this.balls = [];
-                setTimeout(this.shoot.bind(this), 1000);
-                setTimeout(this.shoot.bind(this), 2000);
             }
 
-            shoot () {
+            shoot (color) {
                 let ball = new Ifinity.Ball(this.ctx, this.world);
                 ball.x = this.x;
                 ball.y = this.y;
+                ball.color = color;
                 ball.vx = Math.cos(this.rotation) * this.power;
                 ball.vy = Math.sin(this.rotation) * this.power;
                 ball.id = `ball${this.balls.length}`;

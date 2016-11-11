@@ -1,0 +1,71 @@
+<script>
+    Blockly.Blocks.change_ship_direction = {
+        init: function () {
+            let json = {
+              id: "change_ship_direction",
+              message0: "adjust ship direction %1",
+              args0: [{
+                  type: "field_angle",
+                  name: "angle",
+                  angle: 90
+                }],
+              inputsInline: true,
+              colour: "#ff00ff",
+              previousStatement: null,
+              nextStatement: null
+            };
+            this.jsonInit(json);
+        }
+    };
+
+    Blockly.JavaScript.change_ship_direction = function (block) {
+        var angle = block.getFieldValue('angle');
+        
+        return `station.angle = ${angle};\n`;
+    };
+
+    Blockly.Blocks.if_ship_color_is = {
+        init: function () {
+            let json = {
+              id: "if_ship_color_is",
+              message0: "if ship color is %1 %2 %3",
+              args0: [
+                {
+                  type: "field_dropdown",
+                  name: "ship_color",
+                  options: [
+                    [
+                      "red",
+                      "red"
+                    ],
+                    [
+                      "blue",
+                      "blue"
+                    ],
+                    [
+                      "green",
+                      "green"
+                    ]
+                  ]
+                },
+                {
+                  type: "input_dummy"
+                },
+                {
+                  type: "input_statement",
+                  name: "STATEMENT"
+                }
+              ],
+              "colour": '#ff00ff'
+            };
+
+            this.jsonInit(json);
+        }
+    };
+
+    Blockly.JavaScript.if_ship_color_is = function (block) {
+        var dropdown_ship_color = block.getFieldValue('ship_color'),
+            statement = Blockly.JavaScript.statementToCode(block, 'STATEMENT');
+        return `station.whenHit(ship => {\nif (ship.color === '${dropdown_ship_color}') {\n${statement}\n}\n});\n`;
+    };
+</script>

@@ -1,0 +1,144 @@
+<script>
+    Blockly.Blocks.if_switch = {
+        init: function () {
+            let json = {
+            id: "if_switch",
+            message0: "if switch is %1 %2 %3 %4",
+            args0: [
+                {
+                  type: "input_dummy"
+                },
+                {
+                  type: "field_dropdown",
+                  name: "option_value",
+                  options: [
+                    [
+                      "on",
+                      "switch_on"
+                    ],
+                    [
+                      "off",
+                      "switch_off"
+                    ]
+                  ]
+                },
+                {
+                  type: "input_dummy"
+                },
+                {
+                  type: "input_statement",
+                  name: "inputCode"
+                }
+            ],
+            inputsInline: true,
+            colour: 210
+            }
+    };
+
+    Blockly.JavaScript.if_switch = function (block) {
+        var dropdown_option_value = block.getFieldValue('option_value');
+        var statements_name = Blockly.JavaScript.statementToCode(block, 'inputCode');
+        var code = '...;\n';
+        return code;
+    };
+
+    Blockly.Blocks.if_counter = {
+        init: function () {
+            let json = {
+            id: "if_counter",
+            message0: "If counter %1 %2 %3 %4",
+            args0: [
+                {
+                  type: "field_dropdown",
+                  name: "operator",
+                  options: [
+                    [
+                      "=",
+                      "equals"
+                    ],
+                    [
+                      "<",
+                      "less than"
+                    ],
+                    [
+                      ">",
+                      "greater than"
+                    ],
+                    [
+                      "!=",
+                      "not equal to"
+                    ]
+                  ]
+                },
+                {
+                  type: "field_number",
+                  name: "comparitor",
+                  value: 0
+                },
+                {
+                  type: "input_dummy"
+                },
+                {
+                  type: "input_statement",
+                  name: "inputCode"
+                }
+            ],
+            colour: 135
+            }
+    };
+
+    Blockly.JavaScript.if_counter = function (block) {
+        var dropdown_operator = block.getFieldValue('operator');
+        var number_comparitor = block.getFieldValue('comparitor');
+        var statements_name = Blockly.JavaScript.statementToCode(block, 'inputCode');
+
+        var code = '...;\n';
+        return code;
+    };
+
+
+    Blockly.Blocks.toggle_switch = {
+        init: function () {
+            let json = {
+              id: "toggle_switch",
+              message0: "toggle switch",
+              colour: 260
+            }
+    };
+
+    Blockly.JavaScript.toggle_switch = function (block) {
+        var code = '...;\n';
+        return code;
+    };
+
+    Blockly.Blocks.counter_minus_1 = {
+        init: function () {
+            let json = {
+                "type": "counter_minus_1",
+                "message0": "counter - 1",
+                "colour": 210
+            }
+        }
+    }
+
+    Blockly.JavaScript.counter_minus_1 = function (block) {
+        var code = '...;\n';
+        return code;
+    }
+
+    Blockly.Blocks.counter_plus_1 = {
+        init: function () {
+            let json = {
+                "type": "counter_plus_1",
+                "message0": "counter + 1",
+                "colour": 210
+            }
+        }
+    }
+
+    Blockly.JavaScript.counter_plus_1 = function (block) {
+        var code = '...;\n';
+        return code;
+    }
+
+</script>
