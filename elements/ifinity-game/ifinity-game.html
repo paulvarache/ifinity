@@ -1,4 +1,5 @@
 <link rel="import" href="../kano-blockly/kano-blockly.html">
+<link rel="import" href="./blocks/example.html">
 <link rel="import" href="../ifinity-engine/ifinity-engine.html">
 <script>
     (function (Ifinity) {
@@ -20,6 +21,15 @@
                 this.blockly.style.left = '20px';
                 this.blockly.style.bottom = '20px';
                 this.blockly.style.right = '20px';
+
+                this.blockly.toolbox = [{
+                    id: 'example',
+                    name: 'Example',
+                    colour: '#ff00ff',
+                    blocks: [{
+                        id: 'example_block'
+                    }]
+                }];
 
                 this.hideBlockly();
 

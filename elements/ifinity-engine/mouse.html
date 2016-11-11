@@ -1,0 +1,31 @@
+<script>
+    (function (Ifinity) {
+
+        class Mouse {
+
+            constructor () {
+                this.clickCbs = [];
+            }
+
+            grab (parent) {
+                this.parentRect = parent.getBoundingClientRect();
+                parent.addEventListener('click', (e) => {
+                    this.clickCbs.forEach(cb => {
+                        cb({
+                            x: e.x - this.parentRect.left,
+                            y: e.y - this.parentRect.top
+                        });
+                    });
+                });
+            }
+
+            onClick (cb) {
+                this.clickCbs.push(cb);
+            }
+
+        }
+
+        Ifinity.Mouse = new Mouse();
+
+    })(window.Ifinity = window.Ifinity || {});    
+</script>
