@@ -5,14 +5,14 @@
     },
     "emitters": [{
         "x": 0,
-        "y": 0,
-        "rotation": 90,
+        "y": 5,
+        "rotation": 0,
         "code": "emitter.shoot()",
         "frozen": true
     }],
     "stations": [{
-        "x": 0,
-        "y": 3,
+        "x": 5,
+        "y": 5,
         "code": "station.angle = 0",
         "toolbox": [{
             "id": "station",
@@ -24,10 +24,66 @@
                 "id": "change_ship_direction"
             }]
         }]
-    }, {
-        "x": 3,
-        "y": 3,
-        "code": "station.angle = 90",
+    },{
+        "x": 9,
+        "y": 5,
+        "code": "station.angle = 0",
+        "toolbox": [{
+            "id": "station",
+            "name": "Station",
+            "colour": "#fc7362",
+            "blocks": [{
+                "id": "if_ship_color_is"
+            },{
+                "id": "change_ship_direction"
+            }]
+        }]
+    },{
+        "x": 11,
+        "y": 5,
+        "code": "station.angle = 0",
+        "toolbox": [{
+            "id": "station",
+            "name": "Station",
+            "colour": "#fc7362",
+            "blocks": [{
+                "id": "if_ship_color_is"
+            },{
+                "id": "change_ship_direction"
+            }]
+        }]
+    },{
+        "x": 13,
+        "y": 5,
+        "code": "station.angle = 0",
+        "toolbox": [{
+            "id": "station",
+            "name": "Station",
+            "colour": "#fc7362",
+            "blocks": [{
+                "id": "if_ship_color_is"
+            },{
+                "id": "change_ship_direction"
+            }]
+        }]
+    },{
+        "x": 15,
+        "y": 5,
+        "code": "station.angle = 0",
+        "toolbox": [{
+            "id": "station",
+            "name": "Station",
+            "colour": "#fc7362",
+            "blocks": [{
+                "id": "if_ship_color_is"
+            },{
+                "id": "change_ship_direction"
+            }]
+        }]
+    },{
+        "x": 18,
+        "y": 5,
+        "code": "station.angle = 0",
         "toolbox": [{
             "id": "station",
             "name": "Station",
@@ -40,8 +96,8 @@
         }]
     }],
     "goals": [{
-        "x": 10,
-        "y": 9,
+        "x": 14,
+        "y": 12,
         "acceptedColor": "blue"
     }]
 }
